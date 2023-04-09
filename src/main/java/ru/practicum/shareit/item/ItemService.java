@@ -7,13 +7,13 @@ import ru.practicum.shareit.item.exception.UserNotFoundException;
 import java.util.List;
 
 public interface ItemService {
-    ItemDto addNewItemDto(ItemDto itemDto, Long userId) throws UserNotFoundException;
+    ItemDto addNewItemDto(ItemDto itemDto, Long userId);
 
-    ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) throws UserNotFoundException, ItemNotFoundException;
+    ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto);
 
-    ItemDto getItemDtoById(Long id, Long itemId) throws UserNotFoundException;
+    ItemDto getItemDtoById(Long id, Long itemId);
 
-    List<ItemDto> getOwnerItems(Long userId) throws UserNotFoundException;
+    List<ItemDto> getOwnerItems(Long userId);
 
-    List<ItemDto> searchItems(Long userId, String text) throws UserNotFoundException;
+    List<ItemDto> searchItems(Long userId, String text);
 }

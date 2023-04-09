@@ -21,7 +21,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public ItemDto addNewItemDto(ItemDto itemDto, Long userId) throws UserNotFoundException {
+    public ItemDto addNewItemDto(ItemDto itemDto, Long userId) {
         User owner = userRepository.getUserById(userId);
         validOwner(owner);
         Item item = ItemMapper.toItem(itemDto);
@@ -31,7 +31,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) throws UserNotFoundException, ItemNotFoundException {
+    public ItemDto updateItem(Long userId, Long itemId, ItemDto itemDto) {
         User owner = userRepository.getUserById(userId);
         validOwner(owner);
         Item repoItem = itemRepository.getItemByTwoId(userId, itemId);
@@ -46,7 +46,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
-    public ItemDto getItemDtoById(Long userId, Long itemId) throws UserNotFoundException {
+    public ItemDto getItemDtoById(Long userId, Long itemId) {
         User user = userRepository.getUserById(userId);
         validOwner(user);
         Item repoItem = itemRepository.getItemById(itemId);
@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getOwnerItems(Long userId) throws UserNotFoundException {
+    public List<ItemDto> getOwnerItems(Long userId) {
         User owner = userRepository.getUserById(userId);
         validOwner(owner);
         List<Item> itemList = itemRepository.getOwnerItems(userId);
@@ -74,7 +74,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(Long userId, String text) throws UserNotFoundException {
+    public List<ItemDto> searchItems(Long userId, String text) {
         User owner = userRepository.getUserById(userId);
         validOwner(owner);
         if (text.isEmpty()) {
@@ -90,13 +90,13 @@ public class ItemServiceImpl implements ItemService {
         return searchItemDto.isEmpty() ? Collections.emptyList() : searchItemDto;
     }
 
-    private void validItem(Item repoItem) throws ItemNotFoundException {
+    private void validItem(Item repoItem) {
         if (repoItem == null) {
             throw new ItemNotFoundException("Пользователь не найден");
         }
     }
 
-    private void validOwner(User owner) throws UserNotFoundException {
+    private void validOwner(User owner) {
         if (owner == null) {
             throw new UserNotFoundException("Пользователь не найден");
         }

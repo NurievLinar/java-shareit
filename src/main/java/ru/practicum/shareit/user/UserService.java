@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface UserService {
-    UserDto addNewUser(UserDto userDto) throws DuplicateEmailException;
+    UserDto addNewUser(UserDto userDto);
 
     List<UserDto> getAllUsers();
 
@@ -16,5 +16,5 @@ public interface UserService {
 
     void deleteUserById(long userId);
 
-    UserDto updateUser(Long userId, UserDto userDto) throws DuplicateEmailException;
+    UserDto updateUser(Long userId, UserDto userDto);
 }

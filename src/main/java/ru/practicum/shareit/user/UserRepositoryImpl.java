@@ -15,7 +15,7 @@ public class UserRepositoryImpl implements UserRepository {
     private long generatorId = 0;
 
     @Override
-    public User addNewUser(User user) throws DuplicateEmailException {
+    public User addNewUser(User user) {
         validUserEmail(user);
         setId(user);
         users.put(user.getId(), user);
@@ -44,7 +44,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    private void validUserEmail(User user) throws DuplicateEmailException {
+    private void validUserEmail(User user) {
         for (User user1 : getAllUsers()) {
             if (user1.getEmail().equals(user.getEmail())) {
                 if (!user1.getId().equals(user.getId())) {

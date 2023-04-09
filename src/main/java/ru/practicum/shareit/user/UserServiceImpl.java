@@ -16,7 +16,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDto addNewUser(UserDto userDto) throws DuplicateEmailException {
+    public UserDto addNewUser(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         userRepository.addNewUser(user);
         return UserMapper.toUserDto(user);
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto userDto) throws DuplicateEmailException {
+    public UserDto updateUser(Long userId, UserDto userDto){
         userDto.setId(userId);
         User repoUser = userRepository.getUserById(userId);
         validUser(repoUser);

@@ -37,9 +37,9 @@ public class ItemRepositoryImpl implements ItemRepository {
             return null;
         }
         Item item = null;
-        for (Item item1 : itemList) {
-            if (item1.getId().equals(itemId)) {
-                item = item1;
+        for (Item currentItem : itemList) {
+            if (currentItem.getId().equals(itemId)) {
+                item = currentItem;
             }
         }
         return item;
@@ -56,7 +56,7 @@ public class ItemRepositoryImpl implements ItemRepository {
         List<Item> searchItemsList = new ArrayList<>();
         for (List<Item> itemList : items.values()) {
             for (Item item : itemList) {
-                if (item.getAvailable().equals(true) && (item.getName().toLowerCase().contains(substring) ||
+                if (item.getAvailable() && (item.getName().toLowerCase().contains(substring) ||
                         item.getDescription().toLowerCase().contains(substring))) {
                     searchItemsList.add(item);
                 }

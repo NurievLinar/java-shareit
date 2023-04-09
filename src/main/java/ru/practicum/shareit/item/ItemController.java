@@ -26,7 +26,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addNewItemDto(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                 @Valid @RequestBody ItemDto itemDto) throws UserNotFoundException {
+                                 @Valid @RequestBody ItemDto itemDto) {
         log.info("Получен запрос 'POST /items'");
         return itemService.addNewItemDto(itemDto, userId);
     }
@@ -34,27 +34,27 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") Long userId,
                               @PathVariable Long itemId,
-                              @RequestBody ItemDto itemDto) throws UserNotFoundException, ItemNotFoundException {
+                              @RequestBody ItemDto itemDto) {
         log.info("Получен запрос 'PATCH /items/{}'", itemId);
         return itemService.updateItem(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
     public ItemDto getItemById(@RequestHeader("X-Sharer-User-Id") Long userId,
-                               @PathVariable Long itemId) throws UserNotFoundException {
+                               @PathVariable Long itemId) {
         log.info(String.format("Получен запрос 'GET /items/%d'", itemId));
         return itemService.getItemDtoById(userId, itemId);
     }
 
     @GetMapping()
-    public List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") Long userId) throws UserNotFoundException {
+    public List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос 'GET /items/'");
         return itemService.getOwnerItems(userId);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestParam String text) throws UserNotFoundException {
+                                     @RequestParam String text) {
         log.info("Получен запрос 'GET /items/search?text = {}'", text);
         return itemService.searchItems(userId, text);
 

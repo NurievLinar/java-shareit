@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface UserRepository {
 
-    User addNewUser(User user) throws DuplicateEmailException;
+    User addNewUser(User user);
 
     List<User> getAllUsers();
 

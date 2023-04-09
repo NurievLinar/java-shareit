@@ -23,14 +23,14 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto addNewUser(@Valid @RequestBody UserDto userDto) throws DuplicateEmailException {
+    public UserDto addNewUser(@Valid @RequestBody UserDto userDto) {
         log.info("Получен запрос 'POST /users'");
         return userService.addNewUser(userDto);
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable Long userId,
-                              @RequestBody UserDto userDto) throws DuplicateEmailException {
+                              @RequestBody UserDto userDto) {
         log.info("Получен запрос 'PATCH /users/{}'", userId);
         return userService.updateUser(userId, userDto);
     }

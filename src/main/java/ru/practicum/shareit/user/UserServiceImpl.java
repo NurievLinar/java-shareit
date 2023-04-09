@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(Long userId, UserDto userDto){
+    public UserDto updateUser(Long userId, UserDto userDto) {
         userDto.setId(userId);
         User repoUser = userRepository.getUserById(userId);
         validUser(repoUser);

@@ -1,7 +1,5 @@
 package ru.practicum.shareit.user;
 
-import ru.practicum.shareit.user.exception.DuplicateEmailException;
-
 import java.util.List;
 
 public interface UserRepository {

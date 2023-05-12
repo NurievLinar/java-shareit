@@ -2,7 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.user.exception.ValidationException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
@@ -17,13 +17,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto addNewUser(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
-        userRepository.addNewUser(user);
+        userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public List<UserDto> getAllUsers() {
-        List<User> users = userRepository.getAllUsers();
+        List<User> users = userRepository.findAll();
         return users.stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
@@ -31,29 +31,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUserById(long userId) {
-        User repoUser = userRepository.getUserById(userId);
-        validUser(repoUser);
+        User repoUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         return UserMapper.toUserDto(repoUser);
     }
 
     @Override
     public void deleteUserById(long userId) {
-        userRepository.deleteUserById(userId);
+        userRepository.deleteById(userId);
     }
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
         userDto.setId(userId);
-        User repoUser = userRepository.getUserById(userId);
-        validUser(repoUser);
+        User repoUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         User user = UserMapper.updateUser(userDto, repoUser);
-        userRepository.addNewUser(user);
+        userRepository.save(user);
         return UserMapper.toUserDto(user);
-    }
-
-    private void validUser(User repoUser) {
-        if (repoUser == null) {
-            throw new ValidationException("Такого пользователя не существует");
-        }
     }
 }

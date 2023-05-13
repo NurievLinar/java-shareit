@@ -56,7 +56,6 @@ public class ItemServiceImpl implements ItemService {
         return ItemMapper.toItemDto(item);
     }
 
-
     @Override
     public ItemDto getItemDtoById(Long userId, Long itemId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
@@ -71,20 +70,17 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setComments(commentDtos);
         if (!user.getId().equals(owner.getId())) return itemDto;
         Sort sortDesc = Sort.by(Sort.Direction.DESC, "end");
-        Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndEndIsBeforeAndStatusIs(
+        Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndStartIsBeforeAndStatusIs(
                 itemId, LocalDateTime.now(), Status.APPROVED, sortDesc);
-
         itemDto.setLastBooking(lastBooking.isEmpty() ? null : LastBookingDto.builder()
                 .id(lastBooking.get().getId())
                 .bookerId(lastBooking.get().getBooker().getId())
                 .start(lastBooking.get().getStart())
                 .end(lastBooking.get().getEnd())
                 .build());
-
-        Sort sortAsc = Sort.by(Sort.Direction.ASC, "end");
-        Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndIsAfterAndStatusIs(
+        Sort sortAsc = Sort.by(Sort.Direction.ASC, "start");
+        Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndStartIsAfterAndStatusIs(
                 itemId, LocalDateTime.now(), Status.APPROVED, sortAsc);
-
         itemDto.setNextBooking(nextBooking.isEmpty() ? null : NextBookingDto.builder()
                 .id(nextBooking.get().getId())
                 .bookerId(nextBooking.get().getBooker().getId())

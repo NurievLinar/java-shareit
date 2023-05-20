@@ -42,6 +42,7 @@ public class BookingMapper {
                 .end(last.getEnd())
                 .build();
     }
+
     public static NextBookingDto toNextBooking(Booking next) {
         return NextBookingDto.builder()
                 .id(next.getId())

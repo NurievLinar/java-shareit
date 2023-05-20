@@ -93,48 +93,38 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getOwnerItems(Long userId) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        List<Item> itemList = itemRepository.findAllByOwner_Id(userId);
-        if (itemList.isEmpty()) return new ArrayList<>();
+        Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId);
+        Set<Long> itemsIds = itemList.stream().map(Item::getId).collect(Collectors.toSet());
+        Map<Long, List<Comment>> comments = commentRepository
+                .findAllByItem_IdInOrderByItem_Id(itemsIds)
+                .stream()
+                .collect(Collectors.groupingBy(it -> it.getItem().getId()));
+        Map<Long, List<Booking>> bookingsItem = bookingRepository
+                .findAllByItem_IdInOrderByStartAsc(itemsIds)
+                .stream()
+                .collect(Collectors.groupingBy(it -> it.getItem().getId()));
         List<ItemDto> itemDtoList = new ArrayList<>();
+        LocalDateTime now = LocalDateTime.now();
         for (Item item : itemList) {
-            ItemDto itemDto = ItemMapper.toItemDto(item);
-            itemDto.setOwner(userId);
+            Booking lastBooking = null;
+            Booking nextBooking = null;
+            if (bookingsItem.get(item.getId()) != null) {
+                List<Booking> bookingList = bookingsItem.get(item.getId());
+                lastBooking = bookingList.stream()
+                        .filter(b -> b.getStart().isBefore(now))
+                        .findFirst().orElse(null);
+                nextBooking = bookingList.stream()
+                        .filter(b -> b.getStart().isAfter(now))
+                        .reduce((first, second) -> first.getStart().isBefore(second.getStart()) ? first : second)
+                        .orElse(null);
+            }
+            ItemDto itemDto = ItemMapper.toItemBookingDto(
+                    item,
+                    comments.getOrDefault(item.getId(), List.of()).stream().map(CommentMapper::toCommentDto).collect(Collectors.toList()),
+                    lastBooking,
+                    nextBooking
+            );
             itemDtoList.add(itemDto);
-        }
-        for (ItemDto itemDto : itemDtoList) {
-            List<Comment> commentList = commentRepository.findAllByItem_Id(itemDto.getId());
-            List<CommentDto> commentDtos = commentList.stream()
-                    .map(CommentMapper::toCommentDto)
-                    .collect(Collectors.toList());
-            itemDto.setComments(commentDtos);
-            Sort sortDesc = Sort.by(Sort.Direction.DESC, "end");
-            Optional<Booking> lastBooking = bookingRepository.findTop1BookingByItem_IdAndEndIsBeforeAndStatusIs(
-                    itemDto.getId(), LocalDateTime.now(), Status.APPROVED, sortDesc);
-            itemDto.setLastBooking(lastBooking.isEmpty() ? LastBookingDto.builder().build() : LastBookingDto.builder()
-                    .id(lastBooking.get().getId())
-                    .bookerId(lastBooking.get().getBooker().getId())
-                    .start(lastBooking.get().getStart())
-                    .end(lastBooking.get().getEnd())
-                    .build());
-            Sort sortAsc = Sort.by(Sort.Direction.ASC, "end");
-            Optional<Booking> nextBooking = bookingRepository.findTop1BookingByItem_IdAndEndIsAfterAndStatusIs(
-                    itemDto.getId(), LocalDateTime.now(), Status.APPROVED, sortAsc);
-            itemDto.setNextBooking(nextBooking.isEmpty() ? NextBookingDto.builder().build() : NextBookingDto.builder()
-                    .id(nextBooking.get().getId())
-                    .bookerId(nextBooking.get().getBooker().getId())
-                    .start(nextBooking.get().getStart())
-                    .end(nextBooking.get().getEnd())
-                    .build());
-        }
-        itemDtoList.sort(Comparator.comparing(o -> o.getLastBooking().getStart(),
-                Comparator.nullsLast(Comparator.reverseOrder())));
-        for (ItemDto itemDto : itemDtoList) {
-            if (itemDto.getLastBooking().getBookerId() == null) {
-                itemDto.setLastBooking(null);
-            }
-            if (itemDto.getNextBooking().getBookerId() == null) {
-                itemDto.setNextBooking(null);
-            }
         }
         return itemDtoList;
     }

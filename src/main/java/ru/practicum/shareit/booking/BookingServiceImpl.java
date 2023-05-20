@@ -102,6 +102,8 @@ public class BookingServiceImpl implements BookingService {
             case REJECTED:
                 bookings = bookingRepository.findAllByBooker_IdAndStatus(userId, Status.REJECTED);
                 break;
+            default:
+                break;
         }
 
         return bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
@@ -135,6 +137,8 @@ public class BookingServiceImpl implements BookingService {
                 break;
             case REJECTED:
                 bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(userId, Status.REJECTED);
+                break;
+            default:
                 break;
         }
 

@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request;
+package ru.practicum.shareit.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +33,4 @@ public class ItemRequest {
 
     @Column(name = "create_date")
     private LocalDateTime created; //дата и время создания запроса.
-
 }

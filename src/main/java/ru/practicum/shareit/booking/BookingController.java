@@ -47,16 +47,20 @@ public class BookingController {
     @GetMapping
     public List<BookingInfoDto> get(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(defaultValue = "ALL", required = false) String state) {
+            @RequestParam(defaultValue = "ALL", required = false) String state,
+            @RequestParam(defaultValue = "0") Long from,
+            @RequestParam(defaultValue = "10") Long size) {
         log.info("Получен запрос 'GET /bookings'");
-        return bookingService.get(userId, state);
+        return bookingService.get(userId, state, from, size);
     }
 
     @GetMapping("/owner")
     public List<BookingInfoDto> getByOwner(
             @RequestHeader("X-Sharer-User-Id") Long userId,
-            @RequestParam(defaultValue = "ALL", required = false) String state) {
+            @RequestParam(defaultValue = "ALL", required = false) String state,
+            @RequestParam(defaultValue = "0") Long from,
+            @RequestParam(defaultValue = "10") Long size) {
         log.info("Получен запрос 'GET /owner'");
-        return bookingService.getByOwner(userId, state);
+        return bookingService.getByOwner(userId, state, from, size);
     }
 }

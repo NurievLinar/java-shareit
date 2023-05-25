@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.BookingRepository;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.InvalidCommentException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
+import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -91,9 +93,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getOwnerItems(Long userId) {
+    public List<ItemDto> getOwnerItems(Long userId, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId);
+        if (from < 0) throw new PaginationException("Ошибка пагинации");
+        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
+
+        Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId, pageRequest);
         Set<Long> itemsIds = itemList.stream().map(Item::getId).collect(Collectors.toSet());
         Map<Long, List<Comment>> comments = commentRepository
                 .findAllByItem_IdInOrderByItem_Id(itemsIds)
@@ -130,10 +136,13 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> searchItems(Long userId, String text) {
+    public List<ItemDto> searchItems(Long userId, String text, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         if (text.isEmpty()) return Collections.emptyList();
-        List<Item> searchItemList = itemRepository.searchAvailableByText(text);
+        if (from < 0) throw new PaginationException("Ошибка пагинации");
+        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
+        List<Item> searchItemList = itemRepository.searchAvailableByText(text, pageRequest);
         List<ItemDto> searchItemDto = new ArrayList<>();
         for (Item item : searchItemList) {
             ItemDto itemDto = ItemMapper.toItemDto(item);

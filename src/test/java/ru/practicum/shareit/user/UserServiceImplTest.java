@@ -96,8 +96,8 @@ class UserServiceImplTest {
                 () -> userService.getUserById(1L)
         );
 
-        assertThat(updateException.getMessage(), is("user not found"));
-        assertThat(getException.getMessage(), is("user not found"));
+        assertThat(updateException.getMessage(), is("Пользователь не найден"));
+        assertThat(getException.getMessage(), is("Пользователь не найден"));
     }
 
 

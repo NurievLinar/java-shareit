@@ -183,8 +183,8 @@ class ItemControllerTest {
     }
 
     @Test
-    void comment() throws Exception {
-        when(itemService.comment(1L, 1L, commentDtoCreateTest))
+    void addComment() throws Exception {
+        when(itemService.addComment(1L, 1L, commentDtoCreateTest))
                 .thenReturn(commentDtoCreated);
 
         mvc.perform(post("/items/1/comment")

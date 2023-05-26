@@ -28,25 +28,25 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public List<ItemRequestDto> get(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemRequestDto> getAllUserRequest(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("Получен запрос 'Get /requests'");
-        return itemRequestService.get(userId);
+        return itemRequestService.getAllUserRequest(userId);
     }
 
     @GetMapping("/all")
-    public List<ItemRequestDto> get(
+    public List<ItemRequestDto> getAllRequests(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @RequestParam(defaultValue = "0") Long from,
             @RequestParam(defaultValue = "10") Long size) {
         log.info("Получен запрос 'GET /requests/all'");
-        return itemRequestService.get(userId, from, size);
+        return itemRequestService.getAllRequests(userId, from, size);
     }
 
     @GetMapping("/{requestId}")
-    public ItemRequestDto get(
+    public ItemRequestDto getRequestById(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long requestId) {
         log.info(String.format("Получен запрос 'GET /requests/%d'", requestId));
-        return itemRequestService.get(userId, requestId);
+        return itemRequestService.getRequestById(userId, requestId);
     }
 }

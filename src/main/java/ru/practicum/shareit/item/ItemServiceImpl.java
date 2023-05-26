@@ -95,8 +95,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getOwnerItems(Long userId, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
 
         Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId, pageRequest);
@@ -139,8 +138,7 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> searchItems(Long userId, String text, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         if (text.isEmpty()) return Collections.emptyList();
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
         List<Item> searchItemList = itemRepository.searchAvailableByText(text, pageRequest);
         List<ItemDto> searchItemDto = new ArrayList<>();
@@ -153,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public CommentDto comment(Long userId, Long itemId, CommentDto commentDto) {
+    public CommentDto addComment(Long userId, Long itemId, CommentDto commentDto) {
         Item item = itemRepository.findById(itemId).orElseThrow(() -> new ItemNotFoundException("Вещь не найдена"));
         User author = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         Sort sortDesc = Sort.by(Sort.Direction.DESC, "end");
@@ -163,5 +161,10 @@ public class ItemServiceImpl implements ItemService {
         Comment comment = CommentMapper.toComment(commentDto, item, author, LocalDateTime.now());
         comment = commentRepository.save(comment);
         return CommentMapper.toCommentDto(comment);
+    }
+
+    private void validatePagination(Long from, Long size) {
+        if (from < 0) throw new PaginationException("Ошибка пагинации");
+        if (size <= 0) throw new PaginationException("Ошибка пагинации");
     }
 }

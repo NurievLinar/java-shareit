@@ -59,8 +59,8 @@ public class BookingServiceImpl implements BookingService {
                 .orElseThrow(() -> new BookingNotFoundException("Бронирование не найдено"));
         Item item = booking.getItem();
         if (!userId.equals(item.getOwner().getId())) throw new UserNotFoundException("Пользователь не найден");
-        if (booking.getStatus().equals(Status.APPROVED) ||
-                booking.getStatus().equals(Status.REJECTED)) throw new InvalidStatusException("Статус не требует изменений");
+        if (Status.APPROVED.equals(booking.getStatus()) ||
+                Status.REJECTED.equals(booking.getStatus())) throw new InvalidStatusException("Статус не требует изменений");
         if (approved != null) booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
         booking = bookingRepository.save(booking);
         return BookingMapper.toBookingInfoDto(booking);
@@ -81,8 +81,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingInfoDto> get(Long userId, String value, Long from, Long size) {
         State state = validateState(value);
         User booker = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
         List<Booking> bookings = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
@@ -108,7 +107,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findAllByBooker_IdAndStatus(userId, Status.REJECTED, pageRequest);
                 break;
             default:
-                break;
+                throw new InvalidStatusException("Unknown state: " + value);
         }
 
         return bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
@@ -120,8 +119,7 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingInfoDto> getByOwner(Long userId, String value, Long from, Long size) {
         State state = validateState(value);
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
         List<Booking> bookings = new ArrayList<>();
         Sort sort = Sort.by(Sort.Direction.DESC, "start");
@@ -147,7 +145,7 @@ public class BookingServiceImpl implements BookingService {
                 bookings = bookingRepository.findAllByItem_Owner_IdAndStatus(userId, Status.REJECTED, pageRequest);
                 break;
             default:
-                break;
+                throw new InvalidStatusException("Unknown state: " + value);
         }
 
         return bookings.isEmpty() ? Collections.emptyList() : bookings.stream()
@@ -163,5 +161,10 @@ public class BookingServiceImpl implements BookingService {
             throw new InvalidStatusException("Unknown state: " + value);
         }
         return state;
+    }
+
+    private void validatePagination(Long from, Long size) {
+        if (from < 0) throw new PaginationException("Ошибка пагинации");
+        if (size <= 0) throw new PaginationException("Ошибка пагинации");
     }
 }

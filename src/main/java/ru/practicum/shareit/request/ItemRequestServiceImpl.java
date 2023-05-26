@@ -42,7 +42,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> get(Long userId) {
+    public List<ItemRequestDto> getAllUserRequest(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         List<ItemRequest> itemRequests = itemRequestRepository.findAllByRequestor_IdOrderByCreatedDesc(userId);
         if (itemRequests.isEmpty()) return Collections.emptyList();
@@ -68,11 +68,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> get(Long userId, Long from, Long size) throws
+    public List<ItemRequestDto> getAllRequests(Long userId, Long from, Long size) throws
             UserNotFoundException, PaginationException {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
+        validatePagination(from, size);
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         PageRequest pageRequest = PageRequest.of(
                 from.intValue(), size.intValue(), sort);
@@ -99,7 +98,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestDto get(Long userId, Long requestId) {
+    public ItemRequestDto getRequestById(Long userId, Long requestId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         ItemRequest itemRequest = itemRequestRepository.findItemRequestById(requestId)
                 .orElseThrow(() -> new ItemRequestNotFoundException("Запрос не найден"));
@@ -112,5 +111,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             itemRequestDto.setItems(itemDtos);
         }
         return itemRequestDto;
+    }
+
+    private void validatePagination(Long from, Long size) {
+        if (from < 0) throw new PaginationException("Ошибка пагинации");
+        if (size <= 0) throw new PaginationException("Ошибка пагинации");
     }
 }

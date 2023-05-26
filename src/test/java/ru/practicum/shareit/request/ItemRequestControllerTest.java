@@ -97,7 +97,7 @@ class ItemRequestControllerTest {
     void getOwnRequest() throws Exception {
         itemRequestDtoCreated.setItems(List.of(itemDto));
 
-        when(itemRequestService.get(2L))
+        when(itemRequestService.getAllUserRequest(2L))
                 .thenReturn(List.of(itemRequestDtoCreated));
 
         mvc.perform(get("/requests")
@@ -127,7 +127,7 @@ class ItemRequestControllerTest {
     void getAll() throws Exception {
         itemRequestDtoCreated.setItems(List.of(itemDto));
 
-        when(itemRequestService.get(3L, 0L, 10L))
+        when(itemRequestService.getAllRequests(3L, 0L, 10L))
                 .thenReturn(List.of(itemRequestDtoCreated));
 
         mvc.perform(get("/requests/all")
@@ -157,7 +157,7 @@ class ItemRequestControllerTest {
     void getRequestById() throws Exception {
         itemRequestDtoCreated.setItems(List.of(itemDto));
 
-        when(itemRequestService.get(3L, 1L))
+        when(itemRequestService.getRequestById(3L, 1L))
                 .thenReturn(itemRequestDtoCreated);
 
         mvc.perform(get("/requests/1")

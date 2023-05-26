@@ -92,15 +92,15 @@ class ItemRequestServiceImplTest {
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,
-                () -> itemRequestService.get(2L));
+                () -> itemRequestService.getAllUserRequest(2L));
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,
-                () -> itemRequestService.get(2L, 0L, 10L));
+                () -> itemRequestService.getAllRequests(2L, 0L, 10L));
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,
-                () -> itemRequestService.get(2L, 1L));
+                () -> itemRequestService.getRequestById(2L, 1L));
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
     }
 
@@ -118,7 +118,7 @@ class ItemRequestServiceImplTest {
         when(itemRequestRepository.findAllByRequestor_IdOrderByCreatedDesc(2L))
                 .thenReturn(new ArrayList<>());
 
-        List<ItemRequestDto> itemRequestDtos = itemRequestService.get(2L);
+        List<ItemRequestDto> itemRequestDtos = itemRequestService.getAllUserRequest(2L);
 
         assertTrue(itemRequestDtos.isEmpty());
 
@@ -147,7 +147,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_IdIn(List.of(1L)))
                 .thenReturn(items);
 
-        itemRequestDtos = itemRequestService.get(2L);
+        itemRequestDtos = itemRequestService.getAllUserRequest(2L);
 
         assertTrue(itemRequestDtos.get(0).getItems().isEmpty());
 
@@ -165,7 +165,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_IdIn(List.of(1L)))
                 .thenReturn(items);
 
-        itemRequestDtos = itemRequestService.get(2L);
+        itemRequestDtos = itemRequestService.getAllUserRequest(2L);
 
         assertThat(itemRequestDtos, is(notNullValue()));
     }
@@ -200,7 +200,7 @@ class ItemRequestServiceImplTest {
 
         when(itemRequestRepository.findAllByRequestor_IdIsNot(any(), any()))
                 .thenReturn(itemRequests);
-        List<ItemRequestDto> itemRequestDtos = itemRequestService.get(1L, 0L, 10L);
+        List<ItemRequestDto> itemRequestDtos = itemRequestService.getAllRequests(1L, 0L, 10L);
         assertTrue(itemRequestDtos.isEmpty());
 
         itemRequests = List.of(request);
@@ -211,7 +211,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_IdIn(List.of(1L)))
                 .thenReturn(items);
 
-        itemRequestDtos = itemRequestService.get(1L, 0L, 10L);
+        itemRequestDtos = itemRequestService.getAllRequests(1L, 0L, 10L);
         assertTrue(itemRequestDtos.get(0).getItems().isEmpty());
 
         Item item = Item.builder()
@@ -227,7 +227,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_IdIn(List.of(1L)))
                 .thenReturn(items);
 
-        itemRequestDtos = itemRequestService.get(1L, 0L, 10L);
+        itemRequestDtos = itemRequestService.getAllRequests(1L, 0L, 10L);
         assertThat(itemRequestDtos, is(notNullValue()));
     }
 
@@ -245,11 +245,11 @@ class ItemRequestServiceImplTest {
         PaginationException invalidPageParamsException;
 
         invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemRequestService.get(1L, -1L, 10L));
+                () -> itemRequestService.getAllRequests(1L, -1L, 10L));
         assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
 
         invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemRequestService.get(1L, 0L, 0L));
+                () -> itemRequestService.getAllRequests(1L, 0L, 0L));
         assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
     }
 
@@ -280,7 +280,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_Id(1L))
                 .thenReturn(items);
 
-        ItemRequestDto itemRequestDto = itemRequestService.get(1L, 1L);
+        ItemRequestDto itemRequestDto = itemRequestService.getRequestById(1L, 1L);
         assertTrue(itemRequestDto.getItems().isEmpty());
 
         Item item = Item.builder()
@@ -296,7 +296,7 @@ class ItemRequestServiceImplTest {
         when(itemRepository.findAllByRequest_Id(1L))
                 .thenReturn(items);
 
-        itemRequestDto = itemRequestService.get(1L, 1L);
+        itemRequestDto = itemRequestService.getRequestById(1L, 1L);
 
         assertThat(itemRequestDto, is(notNullValue()));
     }
@@ -316,7 +316,7 @@ class ItemRequestServiceImplTest {
                 .thenReturn(Optional.empty());
 
         ItemRequestNotFoundException invalidItemRequestIdException = Assertions.assertThrows(ItemRequestNotFoundException.class,
-                () -> itemRequestService.get(1L, 1L));
+                () -> itemRequestService.getRequestById(1L, 1L));
         assertThat(invalidItemRequestIdException.getMessage(), is("Запрос не найден"));
     }
 }

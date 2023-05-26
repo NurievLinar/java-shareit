@@ -140,7 +140,7 @@ class ItemServiceImplTest {
                 .thenReturn(Optional.empty());
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,
-                () -> itemService.comment(3L, 1L, commentDto));
+                () -> itemService.addComment(3L, 1L, commentDto));
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
     }
 
@@ -201,7 +201,7 @@ class ItemServiceImplTest {
                 .thenReturn(Optional.empty());
 
         invalidItemIdException = Assertions.assertThrows(ItemNotFoundException.class,
-                () -> itemService.comment(3L, 1L, commentDto));
+                () -> itemService.addComment(3L, 1L, commentDto));
         assertThat(invalidItemIdException.getMessage(), is("Вещь не найдена"));
     }
 
@@ -490,7 +490,7 @@ class ItemServiceImplTest {
         CommentDto commentDto = CommentDto.builder()
                 .text("comment")
                 .build();
-        commentDto = itemService.comment(3L, 1L, commentDto);
+        commentDto = itemService.addComment(3L, 1L, commentDto);
         assertThat(commentDto, is(notNullValue()));
     }
 
@@ -534,7 +534,7 @@ class ItemServiceImplTest {
         InvalidCommentException invalidCommentException;
 
         invalidCommentException = Assertions.assertThrows(InvalidCommentException.class,
-                () -> itemService.comment(3L, 1L, commentDto));
+                () -> itemService.addComment(3L, 1L, commentDto));
         assertThat(invalidCommentException.getMessage(), is("no booking for comment"));
     }
 }

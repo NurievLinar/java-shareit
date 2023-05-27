@@ -43,24 +43,28 @@ public class ItemController {
     }
 
     @GetMapping()
-    public List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                       @RequestParam(defaultValue = "0") Long from,
+                                       @RequestParam(defaultValue = "10") Long size) {
         log.info("Получен запрос 'GET /items/'");
-        return itemService.getOwnerItems(userId);
+        return itemService.getOwnerItems(userId, from, size);
     }
 
     @GetMapping("/search")
     public List<ItemDto> searchItems(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                     @RequestParam String text) {
+                                     @RequestParam String text,
+                                     @RequestParam(defaultValue = "0") Long from,
+                                     @RequestParam(defaultValue = "10") Long size) {
         log.info("Получен запрос 'GET /items/search?text = {}'", text);
-        return itemService.searchItems(userId, text);
+        return itemService.searchItems(userId, text, from, size);
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto comment(
+    public CommentDto addComment(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long itemId,
             @Valid @RequestBody CommentDto commentDto) {
         log.info("Получен запрос 'POST /{itemId}/comment'");
-        return itemService.comment(userId, itemId, commentDto);
+        return itemService.addComment(userId, itemId, commentDto);
     }
 }

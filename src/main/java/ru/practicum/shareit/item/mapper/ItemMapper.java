@@ -5,7 +5,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.request.ItemRequest;
+import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ public class ItemMapper {
                 .name(item.getName())
                 .description(item.getDescription())
                 .available(item.getAvailable())
-                .request(item.getRequest() != null ? item.getRequest().getId() : null)
+                .requestId(item.getRequest() != null ? item.getRequest().getId() : null)
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class ItemMapper {
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
                 .available(itemDto.getAvailable())
-                .request(itemDto.getRequest() == null ? null : ItemRequest.builder().id(itemDto.getRequest()).build())
+                .request(itemDto.getRequestId() == null ? null : ItemRequest.builder().id(itemDto.getRequestId()).build())
                 .build();
     }
 
@@ -36,8 +36,8 @@ public class ItemMapper {
                 .name(itemDto.getName() == null ? item.getName() : itemDto.getName())
                 .description(itemDto.getDescription() == null ? item.getDescription() : itemDto.getDescription())
                 .available(itemDto.getAvailable() == null ? item.getAvailable() : itemDto.getAvailable())
-                .request(itemDto.getRequest() == null ?
-                        item.getRequest() : ItemRequest.builder().id(itemDto.getRequest()).build())
+                .request(itemDto.getRequestId() == null ?
+                        item.getRequest() : ItemRequest.builder().id(itemDto.getRequestId()).build())
                 .build();
     }
 

@@ -60,7 +60,8 @@ public class BookingServiceImpl implements BookingService {
         Item item = booking.getItem();
         if (!userId.equals(item.getOwner().getId())) throw new UserNotFoundException("Пользователь не найден");
         if (Status.APPROVED.equals(booking.getStatus()) ||
-                Status.REJECTED.equals(booking.getStatus())) throw new InvalidStatusException("Статус не требует изменений");
+                Status.REJECTED.equals(booking.getStatus()))
+            throw new InvalidStatusException("Статус не требует изменений");
         if (approved != null) booking.setStatus(approved ? Status.APPROVED : Status.REJECTED);
         booking = bookingRepository.save(booking);
         return BookingMapper.toBookingInfoDto(booking);

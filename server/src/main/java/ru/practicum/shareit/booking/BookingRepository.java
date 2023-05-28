@@ -13,28 +13,28 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findAllByBooker_IdOrderByStartDesc(Long userId,  PageRequest pageRequest);
+    List<Booking> findAllByBooker_IdOrderByStartDesc(Long userId, PageRequest pageRequest);
 
-    List<Booking> findAllByBooker_IdAndStartIsAfter(Long userId, LocalDateTime start, Sort sort,  PageRequest pageRequest);
+    List<Booking> findAllByBooker_IdAndStartIsAfter(Long userId, LocalDateTime start, Sort sort, PageRequest pageRequest);
 
     List<Booking> findAllByBooker_IdAndStartIsBeforeAndEndIsAfter(
-            Long userId, LocalDateTime start, LocalDateTime end, Sort sort,  PageRequest pageRequest);
+            Long userId, LocalDateTime start, LocalDateTime end, Sort sort, PageRequest pageRequest);
 
-    List<Booking> findAllByBooker_IdAndEndIsBefore(Long userId, LocalDateTime start, Sort sort,  PageRequest pageRequest);
+    List<Booking> findAllByBooker_IdAndEndIsBefore(Long userId, LocalDateTime start, Sort sort, PageRequest pageRequest);
 
-    List<Booking> findAllByBooker_IdAndStatus(Long userId, Status status,  PageRequest pageRequest);
+    List<Booking> findAllByBooker_IdAndStatus(Long userId, Status status, PageRequest pageRequest);
 
-    List<Booking> findAllByItem_Owner_IdOrderByStartDesc(Long userId,  PageRequest pageRequest);
+    List<Booking> findAllByItem_Owner_IdOrderByStartDesc(Long userId, PageRequest pageRequest);
 
     List<Booking> findAllByItem_Owner_IdAndStartIsAfter(
-            Long userId, LocalDateTime start, Sort sort,  PageRequest pageRequest);
+            Long userId, LocalDateTime start, Sort sort, PageRequest pageRequest);
 
     List<Booking> findAllByItem_Owner_IdAndStartIsBeforeAndEndIsAfter(
-            Long userId, LocalDateTime start, LocalDateTime end, Sort sort,  PageRequest pageRequest);
+            Long userId, LocalDateTime start, LocalDateTime end, Sort sort, PageRequest pageRequest);
 
-    List<Booking> findAllByItem_Owner_IdAndEndIsBefore(Long userId, LocalDateTime start, Sort sort,  PageRequest pageRequest);
+    List<Booking> findAllByItem_Owner_IdAndEndIsBefore(Long userId, LocalDateTime start, Sort sort, PageRequest pageRequest);
 
-    List<Booking> findAllByItem_Owner_IdAndStatus(Long userId, Status status,  PageRequest pageRequest);
+    List<Booking> findAllByItem_Owner_IdAndStatus(Long userId, Status status, PageRequest pageRequest);
 
     Optional<Booking> findTop1BookingByItem_IdAndBooker_IdAndEndIsBeforeAndStatusIs(
             Long itemId, Long bookerId, LocalDateTime end, Status status, Sort sort);

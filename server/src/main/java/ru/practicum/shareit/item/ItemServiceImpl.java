@@ -41,7 +41,7 @@ public class ItemServiceImpl implements ItemService {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(owner);
-        itemRepository.save(item);
+        item = itemRepository.save(item);
         return ItemMapper.toItemDto(item);
     }
 

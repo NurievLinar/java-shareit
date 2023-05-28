@@ -1,3 +1,4 @@
+/*
 package ru.practicum.shareit.booking;
 
 import org.springframework.http.HttpStatus;
@@ -15,3 +16,4 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 }
+*/

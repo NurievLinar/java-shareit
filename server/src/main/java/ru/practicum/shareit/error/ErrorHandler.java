@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exceptions;
+package ru.practicum.shareit.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -7,8 +7,10 @@ import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.booking.exeptions.InvalidStatusException;
+import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.user.exception.UserNotFoundException;
 
-import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
 @RestControllerAdvice
@@ -29,10 +31,23 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
-        log.warn("[HTTP STATUS 400] {} ", e.getMessage(), e);
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserNotFoundException(UserNotFoundException exception) {
+        log.warn("400 {}", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
+    }
 
+//    @ExceptionHandler
+//    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+//    public ErrorResponse handleConstraintViolationException(final ConstraintViolationException e) {
+//        log.warn("[HTTP STATUS 400] {} ", e.getMessage(), e);
+//
+//        return new ErrorResponse(e.getMessage());
+//    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidStatusException(InvalidStatusException e) {
         return new ErrorResponse(e.getMessage());
     }
 

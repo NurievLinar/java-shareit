@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -22,7 +21,7 @@ public class ItemController {
 
     @PostMapping
     public ItemDto addNewItemDto(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                 @Valid @RequestBody ItemDto itemDto) {
+                                 @RequestBody ItemDto itemDto) {
         log.info("Получен запрос 'POST /items'");
         return itemService.addNewItemDto(itemDto, userId);
     }
@@ -63,7 +62,7 @@ public class ItemController {
     public CommentDto addComment(
             @RequestHeader("X-Sharer-User-Id") Long userId,
             @PathVariable Long itemId,
-            @Valid @RequestBody CommentDto commentDto) {
+            @RequestBody CommentDto commentDto) {
         log.info("Получен запрос 'POST /{itemId}/comment'");
         return itemService.addComment(userId, itemId, commentDto);
     }

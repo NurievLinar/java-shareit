@@ -27,11 +27,9 @@ public class Item {
     private Long id;
 
     @Column(name = "name")
-    @NotBlank
     private String name;
 
     @Column(name = "description")
-    @NotBlank
     private String description;
 
     @ManyToOne
@@ -39,7 +37,6 @@ public class Item {
     private User owner;
 
     @Column(name = "is_available")
-    @NotNull
     private Boolean available;
 
     @ManyToOne

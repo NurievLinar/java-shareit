@@ -10,7 +10,7 @@ import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
-import ru.practicum.shareit.exceptions.ItemRequestNotFoundException;
+import ru.practicum.shareit.request.exception.ItemRequestNotFoundException;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;

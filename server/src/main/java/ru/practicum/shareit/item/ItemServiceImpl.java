@@ -116,11 +116,12 @@ public class ItemServiceImpl implements ItemService {
             if (bookingsItem.get(item.getId()) != null) {
                 List<Booking> bookingList = bookingsItem.get(item.getId());
                 lastBooking = bookingList.stream()
-                        .filter(b -> b.getEnd().isBefore(now))
-                        .findFirst().orElse(null);
+                        .filter(b -> !b.getStart().isAfter(now))
+                        .findFirst()
+                        .orElse(null);
                 nextBooking = bookingList.stream()
                         .filter(b -> b.getStart().isAfter(now))
-                        .reduce((first, second) -> first.getStart().isBefore(second.getStart()) ? first : second)
+                        .reduce((a, b) -> a.getStart().isBefore(b.getStart()) ? a : b)
                         .orElse(null);
             }
             ItemDto itemDto = ItemMapper.toItemBookingDto(

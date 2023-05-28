@@ -116,7 +116,7 @@ public class ItemServiceImpl implements ItemService {
             if (bookingsItem.get(item.getId()) != null) {
                 List<Booking> bookingList = bookingsItem.get(item.getId());
                 lastBooking = bookingList.stream()
-                        .filter(b -> b.getStart().isBefore(now))
+                        .filter(b -> b.getEnd().isBefore(now))
                         .findFirst().orElse(null);
                 nextBooking = bookingList.stream()
                         .filter(b -> b.getStart().isAfter(now))

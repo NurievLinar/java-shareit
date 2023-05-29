@@ -98,7 +98,8 @@ public class ItemServiceImpl implements ItemService {
         validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
 
-        Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId, pageRequest);
+        Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId, pageRequest)
+                .stream().sorted(Comparator.comparing(Item::getId)).collect(Collectors.toList());
         Set<Long> itemsIds = itemList.stream().map(Item::getId).collect(Collectors.toSet());
         Map<Long, List<Comment>> comments = commentRepository
                 .findAllByItem_IdInOrderByItem_Id(itemsIds)

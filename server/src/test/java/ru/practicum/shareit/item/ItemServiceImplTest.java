@@ -19,7 +19,6 @@ import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +26,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -78,7 +78,7 @@ class ItemServiceImplTest {
         when(itemRepository.save(any()))
                 .thenReturn(item);
 
-        itemDto = itemService.addNewItemDto(itemDto,1L);
+        itemDto = itemService.addNewItemDto(itemDto, 1L);
 
         assertThat(itemDto, is(notNullValue()));
     }
@@ -97,7 +97,7 @@ class ItemServiceImplTest {
         UserNotFoundException invalidUserIdException;
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,
-                () -> itemService.addNewItemDto(itemDto,1L));
+                () -> itemService.addNewItemDto(itemDto, 1L));
         assertThat(invalidUserIdException.getMessage(), is("Пользователь не найден"));
 
         invalidUserIdException = Assertions.assertThrows(UserNotFoundException.class,

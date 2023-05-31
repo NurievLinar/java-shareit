@@ -229,6 +229,7 @@ class ItemRequestServiceImplTest {
         itemRequestDtos = itemRequestService.getAllRequests(1L, 0L, 10L);
         assertThat(itemRequestDtos, is(notNullValue()));
     }
+
     @Test
     void getRequestByIdByAnyUser() {
         User owner = User.builder()

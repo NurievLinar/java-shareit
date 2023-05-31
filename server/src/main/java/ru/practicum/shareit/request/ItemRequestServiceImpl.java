@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -68,10 +67,8 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public List<ItemRequestDto> getAllRequests(Long userId, Long from, Long size) throws
-            UserNotFoundException, PaginationException {
+    public List<ItemRequestDto> getAllRequests(Long userId, Long from, Long size) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        validatePagination(from, size);
         Sort sort = Sort.by(Sort.Direction.DESC, "created");
         PageRequest pageRequest = PageRequest.of(
                 from.intValue(), size.intValue(), sort);
@@ -111,10 +108,5 @@ public class ItemRequestServiceImpl implements ItemRequestService {
             itemRequestDto.setItems(itemDtos);
         }
         return itemRequestDto;
-    }
-
-    private void validatePagination(Long from, Long size) {
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
     }
 }

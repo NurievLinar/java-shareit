@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookItemRequestDto;
 import ru.practicum.shareit.booking.dto.BookingState;
 import ru.practicum.shareit.exceptions.BadRequestException;
+import ru.practicum.shareit.exceptions.InvalidDateTimeException;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -38,6 +39,7 @@ public class BookingController {
 	public ResponseEntity<Object> bookItem(@RequestHeader("X-Sharer-User-Id") long userId,
 										   @Valid @RequestBody BookItemRequestDto requestDto) {
 		log.info("Creating booking {}, userId={}", requestDto, userId);
+		if (!requestDto.getEnd().isAfter(requestDto.getStart())) throw new InvalidDateTimeException("Неверное время");
 		return bookingClient.bookItem(userId, requestDto);
 	}
 

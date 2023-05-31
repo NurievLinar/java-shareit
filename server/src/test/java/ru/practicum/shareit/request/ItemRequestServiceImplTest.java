@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.practicum.shareit.item.ItemRepository;
-import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.exception.ItemRequestNotFoundException;
@@ -230,29 +229,6 @@ class ItemRequestServiceImplTest {
         itemRequestDtos = itemRequestService.getAllRequests(1L, 0L, 10L);
         assertThat(itemRequestDtos, is(notNullValue()));
     }
-
-    @Test
-    void throwPaginationException() {
-        User owner = User.builder()
-                .id(1L)
-                .name("name1")
-                .email("user1@email.com")
-                .build();
-
-        when(userRepository.findById(1L))
-                .thenReturn(Optional.of(owner));
-
-        PaginationException invalidPageParamsException;
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemRequestService.getAllRequests(1L, -1L, 10L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemRequestService.getAllRequests(1L, 0L, 0L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-    }
-
     @Test
     void getRequestByIdByAnyUser() {
         User owner = User.builder()

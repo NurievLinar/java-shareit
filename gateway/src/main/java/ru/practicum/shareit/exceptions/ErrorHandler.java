@@ -56,4 +56,11 @@ public class ErrorHandler {
         log.error("Unknown error", throwable);
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidDateTimeException(final InvalidDateTimeException exception) {
+        log.warn("400 {}", exception.getMessage());
+        return new ErrorResponse(exception.getMessage());
+    }
 }

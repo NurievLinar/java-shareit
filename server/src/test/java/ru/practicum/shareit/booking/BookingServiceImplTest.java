@@ -10,14 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.exeptions.BookingNotFoundException;
-import ru.practicum.shareit.booking.exeptions.InvalidDateTimeException;
 import ru.practicum.shareit.booking.exeptions.InvalidStatusException;
 import ru.practicum.shareit.booking.exeptions.NotAvailableException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
@@ -150,38 +148,6 @@ class BookingServiceImplTest {
         notAvailableException = Assertions.assertThrows(NotAvailableException.class,
                 () -> bookingService.create(3L, bookingDto));
         assertThat(notAvailableException.getMessage(), is("Вещь не доступна"));
-    }
-
-    @Test
-    void throwInvalidDateTimeException() {
-        LocalDateTime start = LocalDateTime.now().plusDays(1L);
-        LocalDateTime end = LocalDateTime.now().plusDays(2L);
-
-        BookingDto bookingDto = BookingDto.builder()
-                .start(end)
-                .end(start)
-                .itemId(1L)
-                .build();
-
-        User owner = User.builder()
-                .id(1L)
-                .name("user1")
-                .email("user1@email.com")
-                .build();
-        Item item = Item.builder()
-                .id(1L)
-                .name("name")
-                .description("description")
-                .available(true)
-                .owner(owner)
-                .build();
-        when(itemRepository.findById(1L))
-                .thenReturn(Optional.of(item));
-
-        InvalidDateTimeException invalidDateTimeException;
-        invalidDateTimeException = Assertions.assertThrows(InvalidDateTimeException.class,
-                () -> bookingService.create(3L, bookingDto));
-        assertThat(invalidDateTimeException.getMessage(), is("Неверное время"));
     }
 
     @Test
@@ -582,36 +548,6 @@ class BookingServiceImplTest {
 
         bookingInfoDtoList = bookingService.get(6L, "WAITING", 0L, 10L);
         Assertions.assertTrue(bookingInfoDtoList.isEmpty());
-    }
-
-    @Test
-    void throwPaginationException() {
-        User user = User.builder()
-                .id(3L)
-                .name("user3")
-                .email("user3@email.com")
-                .build();
-
-        when(userRepository.findById(3L))
-                .thenReturn(Optional.of(user));
-
-        PaginationException invalidPageParamsException;
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> bookingService.get(3L, "ALL", -1L, 10L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> bookingService.get(3L, "ALL", 0L, 0L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> bookingService.getByOwner(3L, "ALL", -1L, 10L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> bookingService.getByOwner(3L, "ALL", 0L, 0L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
     }
 
     @Test

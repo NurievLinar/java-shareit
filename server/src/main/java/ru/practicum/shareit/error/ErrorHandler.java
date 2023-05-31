@@ -8,12 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.booking.exeptions.BookingNotFoundException;
-import ru.practicum.shareit.booking.exeptions.InvalidDateTimeException;
 import ru.practicum.shareit.booking.exeptions.InvalidStatusException;
 import ru.practicum.shareit.booking.exeptions.NotAvailableException;
 import ru.practicum.shareit.item.exception.InvalidCommentException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.request.exception.BadRequestException;
 import ru.practicum.shareit.request.exception.ItemRequestNotFoundException;
 import ru.practicum.shareit.user.exception.UserNotFoundException;
 
@@ -22,12 +20,6 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadRequestException(final BadRequestException exception) {
-        log.warn("400 {}", exception.getMessage());
-        return new ErrorResponse(exception.getMessage());
-    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -67,13 +59,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotAvailableException(NotAvailableException exception) {
-        log.warn("400 {}", exception.getMessage());
-        return new ErrorResponse(exception.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleInvalidDateTimeException(InvalidDateTimeException exception) {
         log.warn("400 {}", exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }

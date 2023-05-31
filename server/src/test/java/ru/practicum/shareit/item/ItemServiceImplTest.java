@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.InvalidCommentException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -368,36 +367,6 @@ class ItemServiceImplTest {
 
         itemDtos = itemService.getOwnerItems(2L, 0L, 10L);
         assertThat(itemDtos, is(notNullValue()));
-    }
-
-    @Test
-    void throwPaginationException() {
-        User owner = User.builder()
-                .id(2L)
-                .name("user2")
-                .email("user2@email.com")
-                .build();
-
-        when(userRepository.findById(2L))
-                .thenReturn(Optional.of(owner));
-
-        PaginationException invalidPageParamsException;
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemService.getOwnerItems(2L, -1L, 10L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemService.getOwnerItems(2L, 0L, 0L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemService.searchItems(2L, "text", -1L, 10L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
-
-        invalidPageParamsException = Assertions.assertThrows(PaginationException.class,
-                () -> itemService.searchItems(2L, "text", 0L, 0L));
-        assertThat(invalidPageParamsException.getMessage(), is("Ошибка пагинации"));
     }
 
     @Test

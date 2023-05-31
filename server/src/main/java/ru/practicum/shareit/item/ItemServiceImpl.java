@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.exception.InvalidCommentException;
 import ru.practicum.shareit.item.exception.ItemNotFoundException;
-import ru.practicum.shareit.item.exception.PaginationException;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
@@ -95,7 +94,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getOwnerItems(Long userId, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
-        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
 
         Collection<Item> itemList = itemRepository.findAllByOwner_Id(userId, pageRequest)
@@ -141,7 +139,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ItemDto> searchItems(Long userId, String text, Long from, Long size) {
         User owner = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
         if (text.isEmpty()) return Collections.emptyList();
-        validatePagination(from, size);
         PageRequest pageRequest = PageRequest.of(from.intValue() / size.intValue(), size.intValue());
         List<Item> searchItemList = itemRepository.searchAvailableByText(text, pageRequest);
         List<ItemDto> searchItemDto = new ArrayList<>();
@@ -164,10 +161,5 @@ public class ItemServiceImpl implements ItemService {
         Comment comment = CommentMapper.toComment(commentDto, item, author, LocalDateTime.now());
         comment = commentRepository.save(comment);
         return CommentMapper.toCommentDto(comment);
-    }
-
-    private void validatePagination(Long from, Long size) {
-        if (from < 0) throw new PaginationException("Ошибка пагинации");
-        if (size <= 0) throw new PaginationException("Ошибка пагинации");
     }
 }

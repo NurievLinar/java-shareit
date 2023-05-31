@@ -10,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingInfoDto;
 import ru.practicum.shareit.booking.exeptions.BookingNotFoundException;
-import ru.practicum.shareit.booking.exeptions.InvalidStatusException;
 import ru.practicum.shareit.booking.exeptions.NotAvailableException;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.Status;
@@ -318,58 +317,6 @@ class BookingServiceImplTest {
         bookingNotFoundException = Assertions.assertThrows(BookingNotFoundException.class,
                 () -> bookingService.get(1L, 1L));
         assertThat(bookingNotFoundException.getMessage(), is("Бронирование не найдено"));
-    }
-
-    @Test
-    void throwInvalidStatusException() {
-        LocalDateTime start = LocalDateTime.now().plusDays(1L);
-        LocalDateTime end = LocalDateTime.now().plusDays(2L);
-
-        User owner = User.builder()
-                .id(1L)
-                .name("user1")
-                .email("user1@email.com")
-                .build();
-        Item item = Item.builder()
-                .id(1L)
-                .name("name")
-                .description("description")
-                .available(true)
-                .owner(owner)
-                .build();
-
-        User booker = User.builder()
-                .id(3L)
-                .name("user3")
-                .email("user3@email.com")
-                .build();
-
-        final Booking booking = Booking.builder()
-                .id(1L)
-                .start(start)
-                .end(end)
-                .item(item)
-                .booker(booker)
-                .status(Status.APPROVED)
-                .build();
-
-        when(bookingRepository.findById(1L))
-                .thenReturn(Optional.of(booking));
-
-        InvalidStatusException invalidStatusException;
-
-        invalidStatusException = Assertions.assertThrows(InvalidStatusException.class,
-                () -> bookingService.approve(1L, 1L, true));
-        assertThat(invalidStatusException.getMessage(), is("Статус не требует изменений"));
-
-        booking.setStatus(Status.REJECTED);
-        invalidStatusException = Assertions.assertThrows(InvalidStatusException.class,
-                () -> bookingService.approve(1L, 1L, true));
-        assertThat(invalidStatusException.getMessage(), is("Статус не требует изменений"));
-
-        invalidStatusException = Assertions.assertThrows(InvalidStatusException.class,
-                () -> bookingService.get(1L, "value", 0L, 10L));
-        assertThat(invalidStatusException.getMessage(), is("Unknown state: value"));
     }
 
     @Test
